@@ -9,14 +9,14 @@
 
   [![Status](https://img.shields.io/badge/status-active-success.svg)]() 
   [![GitHub Issues](https://img.shields.io/github/issues/rjpower4/Jamie.jl.svg)](https://github.com/rjpower4/Jamie.jl/issues)
-  [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/Jamie.jl.svg)](https://github.com/kylelobo/Jamie.jl/pulls)
+  [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/rjpower4/Jamie.jl.svg)](https://github.com/rjpower4/Jamie.jl/pulls)
   [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
 </div>
 
 ---
 
-<p align="center"> Few lines describing your project.
+<p align="center"> Simple Astrodynamics Analysis Toolkit Written in Julia
     <br> 
 </p>
 
