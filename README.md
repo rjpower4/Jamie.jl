@@ -3,13 +3,13 @@
  <img width=200px height=229px src="assets/icon.svg" alt="Project logo"></a>
 </p>
 
-<h3 align="center">Project Title</h3>
+<h3 align="center">Jamie.jl</h3>
 
 <div align="center">
 
   [![Status](https://img.shields.io/badge/status-active-success.svg)]() 
-  [![GitHub Issues](https://img.shields.io/github/issues/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/issues)
-  [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/pulls)
+  [![GitHub Issues](https://img.shields.io/github/issues/rjpower4/Jamie.jl.svg)](https://github.com/rjpower4/Jamie.jl/issues)
+  [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/Jamie.jl.svg)](https://github.com/kylelobo/Jamie.jl/pulls)
   [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
 </div>
