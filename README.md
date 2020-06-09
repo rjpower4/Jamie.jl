@@ -7,7 +7,7 @@
 
 <div align="center">
 
-  [![Status](https://img.shields.io/badge/status-active-success.svg)]() 
+  ![Dev](https://github.com/rjpower4/Jamie.jl/workflows/CI/badge.svg?branch=master)
   [![GitHub Issues](https://img.shields.io/github/issues/rjpower4/Jamie.jl.svg)](https://github.com/rjpower4/Jamie.jl/issues)
   [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/rjpower4/Jamie.jl.svg)](https://github.com/rjpower4/Jamie.jl/pulls)
   [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
