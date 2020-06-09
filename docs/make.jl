@@ -1,5 +1,3 @@
-push!(LOAD_PATH, "../src/")
-
 using Documenter
 using Jamie
 
@@ -15,4 +13,8 @@ makedocs(
         ],
         "CRTBP" => "crtbp.md",
     ],
+)
+
+deploydocs(
+    repo = "github.com/rjpower4/Jamie.jl.git",
 )
