@@ -11,6 +11,8 @@
   [![GitHub Issues](https://img.shields.io/github/issues/rjpower4/Jamie.jl.svg)](https://github.com/rjpower4/Jamie.jl/issues)
   [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/rjpower4/Jamie.jl.svg)](https://github.com/rjpower4/Jamie.jl/pulls)
   [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
+  [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://rjpower4.github.io/Jamie.jl/stable)
+  [![Dev](https://img.shields.io/badge/docs-latest-blue.svg)](https://rjpower.github.io/Jamie.jl/latest)
 
 </div>
 
