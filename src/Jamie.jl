@@ -8,6 +8,10 @@ using LinearAlgebra
 #                                         EXPORT STATEMENTS                                        #
 # ************************************************************************************************ #
 # ************************************************************************************************ #
+
+# Util
+export points_on_sphere
+
 # Position-Velocity
 export PositionVelocity
 export pv_position, pv_position_mag, pv_position_unit
@@ -128,6 +132,7 @@ pv_velocity_unit(pv::PositionVelocity) = pv_velocity(pv) ./ pv_velocity_mag(pv)
 #                                           FILE INCLUDES                                          #
 # ************************************************************************************************ #
 # ************************************************************************************************ #
+include("util.jl")
 include("body.jl")
 include("crtbp.jl")
 

@@ -11,6 +11,7 @@ makedocs(
             "Introduction" => "index.md",
             "Position-Velocity" => "posvel.md",
             "Celestial Bodies" => "body.md",
+            "Utilities" => "util.md",
         ],
         "CRTBP" => "crtbp.md",
     ],
