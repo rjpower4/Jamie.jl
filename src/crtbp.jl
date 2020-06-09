@@ -172,6 +172,38 @@ function nondimensionalize(sys::CrtbpSystem{T1,T1}, pv::PositionVelocity{T2}) wh
     pv ./ scale_vec
 end
 
+"""
+    PositionVelocity(::CrtbpSystem, ::CrtbpP1)
+
+Return the position and velocity of ``P_1`` in the CRTBP.
+"""
+function PositionVelocity(sys::CrtbpSystem, ::CrtbpP1)
+    PositionVelocity(
+        -mass_ratio(sys),
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    )
+end
+
+"""
+    PositionVelocity(::CrtbpSystem, ::CrtbpP2)
+
+Return the position and velocity of ``P_2`` in the CRTBP.
+"""
+function PositionVelocity(sys::CrtbpSystem, ::CrtbpP2)
+    PositionVelocity(
+        1.0 - mass_ratio(sys),
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    )
+end
+
 # ************************************************************************************************ #
 # ************************************************************************************************ #
 #                                   PRIMARY DISTANCE FUNCTIONS                                     #
