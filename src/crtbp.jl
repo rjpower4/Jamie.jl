@@ -434,3 +434,112 @@ function crtbp_jacobian(q::AbstractArray, sys::CrtbpSystem, t)
         Ωxz  Ωyz  Ωzz  0.0  0.0  0.0
     ]
 end
+
+
+# ************************************************************************************************ #
+# ************************************************************************************************ #
+#                                  LAGRANGE POINT DETERMINATION                                    #
+# ************************************************************************************************ #
+# ************************************************************************************************ #
+module LagrangeHelper
+
+export __crtbp_eq_init_guesses
+export __crtbp_eq_helper1, __crtbp_eq_helper2, __crtbp_eq_helper3
+
+function __crtbp_eq_init_guesses(μ)
+    η = (μ / 3.0)^(1.0/3.0)
+    σ = 7.0μ/12.0
+
+    xl1 = 1.0 - μ -
+        η * (1.0 - η/3.0 - η^2/9.0 - 23.0η^3/81.0 + 151.0η^4/243.0 - η^5/9.0)
+    xl2 = 1.0 - μ +
+        η * (1.0 + η/3.0 - η^2/9.0 - 31.0η^3/81.0 - 119.0η^4/243.0 - η^5/9.0)
+    xl3 = -μ - 1.0 +
+        σ * (1.0 + 23.0σ^2/84.0 + 23.0σ^3/84.0 + 761.0σ^4/2352.0 +
+             3163.0σ^5/7056.0 + 30703.0σ^6/49392.0)
+    (xl1, xl2, xl3)
+end
+
+
+
+# ************************************************************************************************ #
+# ************************************************************************************************ #
+#                           HELPER FUNCTIONS FOR NR                            #
+# ************************************************************************************************ #
+# ************************************************************************************************ #
+
+function __crtbp_eq_helper1(μ, γ)
+    ( 1.0 - μ - γ - (1.0 - μ) / (1.0 - γ)^2 + μ / γ^2,
+     -1.0 - 2.0 * (1.0 - μ) / (1.0 - γ)^3 - 2.0μ / γ^3)
+end
+
+function __crtbp_eq_helper2(μ, γ)
+    ((1.0 - μ) / (1.0 + γ)^2 + μ / γ^2 - 1.0 + μ - γ,
+    -2.0 * (1.0 - μ) / (1.0 + γ)^3 - 2.0 * μ / γ^3 - 1.0)
+end
+
+
+function __crtbp_eq_helper3(μ, γ)
+    (-μ - γ + (1 - μ) / γ^2 + μ / (γ + 1.0)^2,
+     -1.0 - 2.0*(1.0 - μ) / γ^3 - 2.0μ / (γ + 1.0)^3)
+end
+
+
+function __crtbp_eq_nr(F, μ, x0, tolerance, max_iter)
+    f, df = F(μ, x0)
+    for i = 1:max_iter
+        if abs(f) < tolerance
+            conv = true
+            break
+        else
+            x0 -= f/df
+            f, df = F(μ, x0)
+        end
+    end
+    x0
+end
+
+end # module LagrangeHelper
+
+
+"""
+    equilibrium_solutions(::CrtbpSystem; [tolerance=1e-12], [max_iter=20])
+
+Obtain the (5) equilibrium solutions for the CRTBP often called Lagrange points.
+These are returned as states. The returned values are not guaranteed to have
+converged, but with default options the likelihood of non-convergence is near zero.
+"""
+function equilibrium_solutions(sys::CrtbpSystem; tolerance=1e-12, max_iter=20)
+
+    μ = mass_ratio(sys)
+
+    # Get the initial guesses for the collinear points
+    x1_guess, x2_guess, x3_guess = LagrangeHelper.__crtbp_eq_init_guesses(μ)
+
+    # Convert the x coordinate guesses to the transformed γ values
+    γ1_guess = 1.0 - μ - x1_guess
+    γ2_guess = x2_guess - 1.0 + μ
+    γ3_guess = -μ - x3_guess
+
+    # Run newton raphson for the three different
+    γ1 = LagrangeHelper.__crtbp_eq_nr(LagrangeHelper.__crtbp_eq_helper1, μ, γ1_guess, tolerance, max_iter)
+    γ2 = LagrangeHelper.__crtbp_eq_nr(LagrangeHelper.__crtbp_eq_helper2, μ, γ2_guess, tolerance, max_iter)
+    γ3 = LagrangeHelper.__crtbp_eq_nr(LagrangeHelper.__crtbp_eq_helper3, μ, γ3_guess, tolerance, max_iter)
+
+    # Convert the (hopefully) converged γ's to x values. This is the most
+    # obvious place to see the transform as well.
+    x1 = 1.0 - μ - γ1
+    x2 = 1.0 - μ + γ2
+    x3 = 0.0 - μ - γ3
+
+    L1 = PositionVelocity(x1, 0.0, 0.0, 0.0, 0.0, 0.0)
+    L2 = PositionVelocity(x2, 0.0, 0.0, 0.0, 0.0, 0.0)
+    L3 = PositionVelocity(x3, 0.0, 0.0, 0.0, 0.0, 0.0)
+
+    # L4 and L5 have the same analytically determined solution for all systems
+    l45_y = sqrt(3.0) / 2.0
+    L4 = PositionVelocity(0.5-μ,  l45_y, 0.0, 0.0, 0.0, 0.0)
+    L5 = PositionVelocity(0.5-μ, -l45_y, 0.0, 0.0, 0.0, 0.0)
+
+    (L1, L2, L3, L4, L5)
+end

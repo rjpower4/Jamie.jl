@@ -34,6 +34,7 @@ export distance_from_primary
 export pseudopotential, pseudopotential_gradient, pseudopotential_hessian
 export jacobi_constant, jacobi_constant_gradient
 export crtbp_eom, crtbp_jacobian
+export equilibrium_solutions
 
 
 # ************************************************************************************************ #
