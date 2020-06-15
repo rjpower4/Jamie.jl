@@ -75,6 +75,30 @@ mean_radius(m::SphericalShapeModel) = m.radius
 
 # ************************************************************************************************ #
 # ************************************************************************************************ #
+#                                      ABSTREACT BODY DEFINION                                     #
+# ************************************************************************************************ #
+# ************************************************************************************************ #
+
+abstract type AbstractBody end
+
+struct NullBody <: AbstractBody end
+
+name_string(::NullBody) = "UNNAMED_BODY"
+
+spice_identifier(nb::NullBody) =
+    throw(DomainError(nb, "`NullBody` Type does not have SPICE ID"))
+
+mean_radius(nb::NullBody) =
+    throw(DomainError(nb, "`NullBody` Type does not define a mean radius"))
+
+potential_model(nb::NullBody) =
+    throw(DomainError(nb, "`NullBody` Type does not define a potential"))
+
+gravitational_parameter(nb::NullBody) =
+    throw(DomainError(nb, "`NullBody` Type does not define a gravitational parameter"))
+
+# ************************************************************************************************ #
+# ************************************************************************************************ #
 #                                      CELESTIAL BODY STRUCTURE                                    #
 # ************************************************************************************************ #
 # ************************************************************************************************ #
@@ -85,7 +109,7 @@ Struct defining a celestial body (e.g. Moon, Planet, Asteroid).
 
 See also: [`PointMassPotential`](@ref), [`SphericalShapeModel`](@ref)
 """
-struct CelestialBody{I <: Integer, P <: PointMassPotential, S <: AbstractShapeModel}
+struct CelestialBody{I <: Integer, P <: PointMassPotential, S <: AbstractShapeModel} <: AbstractBody
     name::String
     spice_id::I
     potential::P
