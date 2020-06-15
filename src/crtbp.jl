@@ -12,7 +12,22 @@ Empty struct identifying the first (usually larger) primary in the CRTBP.
 
 See also: [`CrtbpP2`](@ref)
 """
-struct CrtbpP1 <: CrtbpPrimary end
+struct CrtbpP1{T <: AbstractBody} <: CrtbpPrimary
+    body::T
+end
+
+"""
+    CrtbpP1(body=NullBody())
+
+Construct a new `CrtbpP1` instance.
+The internal `body` field defaults to the `NullBody`.
+
+See also: [`CelestialBody`](@ref), [`NullBody`](@ref), ['CrtbpP2'](@ref)
+"""
+function CrtbpP1(body=NullBody())
+    CrtbpP1(body)
+end
+
 
 """
     CrtbpP2
@@ -21,8 +36,21 @@ Empty struct identifying the second (usually smaller) primary in the CRTBP.
 
 See also: [`CrtbpP1`](@ref)
 """
-struct CrtbpP2 <: CrtbpPrimary end
+struct CrtbpP2{T <: AbstractBody} <: CrtbpPrimary
+    body::T
+end
 
+"""
+    CrtbpP2(body=NullBody())
+
+Construct a new `CrtbpP2` instance.
+The internal `body` field defaults to the `NullBody`.
+
+See also: [`CelestialBody`](@ref), [`NullBody`](@ref), ['CrtbpP1'](@ref)
+"""
+function CrtbpP2(body=NullBody())
+    CrtbpP2(body)
+end
 
 # ************************************************************************************************ #
 # ************************************************************************************************ #
