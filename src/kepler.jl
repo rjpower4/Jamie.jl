@@ -136,7 +136,7 @@ distance_from_primary(p, e, θ) = p / (1.0 + e * cos(θ))
 Calculate the distance from the primary for orbit state define by Keplerian elements.
 """
 distance_from_primary(ke::KeplerianElementSet) =
-    radius(parameter(ke), eccentricity(ke), true_anomaly(ke))
+    distance_from_primary(parameter(ke), eccentricity(ke), true_anomaly(ke))
 
 """
     periapsis_distance(ke::KeplerianElementSet)
