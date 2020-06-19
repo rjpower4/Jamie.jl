@@ -58,7 +58,7 @@ end
 # ************************************************************************************************ #
 # ************************************************************************************************ #
 """
-    CrtbpSystem{T, D <: Union{T, Nothing}}(μ::T, name::String, char_mass::D, char_length::D, char_time::D)
+    CrtbpSystem{T, CM, CL, CT}(μ::T, name::String, char_mass::CM, char_length::CL, char_time::CT)
 
 Struct defining the parameters for the Crtbp System. Contains the mass ratio parameter, ``\\mu``,
 as well as the system name and characteristic quantities.
@@ -66,27 +66,26 @@ as well as the system name and characteristic quantities.
 See also: [`mass_ratio`](@ref), [`characteristic_mass`](@ref), [`characteristic_time`](@ref),
 [`characteristic_length`](@ref), [`characteristic_velocity`](@ref)
 """
-struct CrtbpSystem{T, D <: Union{T, Nothing}}
+struct CrtbpSystem{T, CM, CL, CT}
     μ::T
     name::String
-    char_mass::D
-    char_length::D
-    char_time::D
+    char_mass::CM
+    char_length::CL
+    char_time::CT
 
-    function CrtbpSystem(μ::T, name::String, char_mass::D, char_length::D, char_time::D) where {T,D}
+    function CrtbpSystem(μ::T, name::String, char_mass::CM, char_length::CL, char_time::CT) where {T,CM,CL,CT}
         if μ <= 0.0
             throw(DomainError(μ, "Non-positive μ value"))
         end
-        if D != Nothing
-            if char_mass <= 0
-                throw(DomainError(char_mass, "Non-Positive characteristic mass"))
-            elseif char_length<= 0
-                throw(DomainError(char_length, "Non-Positive characteristic length"))
-            elseif char_time <= 0
-                throw(DomainError(char_time, "Non-Positive characteristic time"))
-            end
+        if CM != Nothing && char_mass <= 0
+            throw(DomainError(char_mass, "Non-Positive characteristic mass"))
+        elseif CL != Nothing && char_length<= 0
+            throw(DomainError(char_length, "Non-Positive characteristic length"))
+        elseif CL != Nothing && char_time <= 0
+            throw(DomainError(char_time, "Non-Positive characteristic time"))
         end
-        new{T, D}(μ, name, char_mass, char_length, char_time)
+
+        new{T, CM, CL, CT}(μ, name, char_mass, char_length, char_time)
     end
 end
 
@@ -105,9 +104,9 @@ Construct a new `CrtbpSystem` with the μ value and the optional keywor argument
 - `char_time::Union{T, Nothing}=nothing`: characteristic time for the system
 """
 function CrtbpSystem(μ::T; name="UNNAMED SYSTEM",
-                     char_mass::D=nothing,
-                     char_length::D=nothing,
-                     char_time::D=nothing) where {T, D}
+                     char_mass::CM=nothing,
+                     char_length::CL=nothing,
+                     char_time::CT=nothing) where {T, CM, CL, CT}
     CrtbpSystem(μ, name, char_mass, char_length, char_time)
 end
 
@@ -131,7 +130,7 @@ the sum of the masses of the two primaries.
 See also: [`CrtbpSystem`](@ref), [`mass_ratio`](@ref), [`characteristic_time`](@ref),
 [`characteristic_length`](@ref), [`characteristic_velocity`](@ref)
 """
-characteristic_mass(s::CrtbpSystem{T,T}) where {T} = s.char_mass
+characteristic_mass(s::CrtbpSystem) = s.char_mass
 
 """
     characteristic_length(::CrtbpSystem)
@@ -142,7 +141,7 @@ the semi-major axis of the circular orbit of P2 in the CRTBP.
 See also: [`CrtbpSystem`](@ref), [`mass_ratio`](@ref), [`characteristic_mass`](@ref),
 [`characteristic_time`](@ref), [`characteristic_velocity`](@ref)
 """
-characteristic_length(s::CrtbpSystem{T, T}) where {T} = s.char_length
+characteristic_length(s) = s.char_length
 
 """
     characteristic_length(::CrtbpSystem)
@@ -153,7 +152,7 @@ time such that the universal gravitational constant in the non-dimensional syste
 See also: [`CrtbpSystem`](@ref), [`mass_ratio`](@ref), [`characteristic_mass`](@ref),
 [`characteristic_length`](@ref), [`characteristic_velocity`](@ref)
 """
-characteristic_time(s::CrtbpSystem{T, T}) where {T} = s.char_time
+characteristic_time(s::CrtbpSystem) = s.char_time
 
 """
     characteristic_velocity(::CrtbpSystem)
@@ -164,7 +163,7 @@ characteristic length divided by the characteristic time.
 See also: [`CrtbpSystem`](@ref), [`mass_ratio`](@ref), [`characteristic_mass`](@ref),
 [`characteristic_length`](@ref)
 """
-function characteristic_velocity(s::CrtbpSystem{T, T}) where {T}
+function characteristic_velocity(s::CrtbpSystem)
     characteristic_length(s) / characteristic_time(s)
 end
 
@@ -177,7 +176,7 @@ with the CRTBP system.
 See also: [`nondimensionalize`](@ref)
 [`CrtbpSystem`](@ref), [`characteristic_length`](@ref), [`characteristic_velocity`](@ref)
 """
-function dimensionalize(sys::CrtbpSystem{T1,T1}, pv::PositionVelocity{T2}) where {T1, T2}
+function dimensionalize(sys::CrtbpSystem, pv::PositionVelocity)
     cl = characteristic_length(sys)
     cv = characteristic_velocity(sys)
     scale_vec = @SVector [cl, cl, cl, cv, cv, cv]
@@ -193,7 +192,7 @@ with the CRTBP system.
 See also: [`dimensionalize`](@ref)
 [`CrtbpSystem`](@ref), [`characteristic_length`](@ref), [`characteristic_velocity`](@ref)
 """
-function nondimensionalize(sys::CrtbpSystem{T1,T1}, pv::PositionVelocity{T2}) where {T1, T2}
+function nondimensionalize(sys::CrtbpSystem, pv::PositionVelocity)
     cl = characteristic_length(sys)
     cv = characteristic_velocity(sys)
     scale_vec = @SVector [cl, cl, cl, cv, cv, cv]
