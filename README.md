@@ -25,19 +25,17 @@
 ## 📝 Table of Contents
 - [About](#about)
 - [Getting Started](#getting_started)
-- [Deployment](#deployment)
 - [Usage](#usage)
 - [Built Using](#built_using)
-- [TODO](../TODO.md)
-- [Contributing](../CONTRIBUTING.md)
+- [Contributing](#contributing)
 - [Authors](#authors)
-- [Acknowledgments](#acknowledgement)
 
 ## 🧐 About <a name = "about"></a>
-Write about 1-2 paragraphs describing the purpose of your project.
+`Jamie` is a library primarily intended for use in scripts and packages for astrodynamics analyses. 
+A key goal of `Jamie` is to be *simple* and not burden the user with a complex API.
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+and the required dependencies and packages will be installed.
 
 ### Prerequisites
 This software requires the [Julia Programming Language](https://julialang.org/) which is free and open source software.
@@ -47,57 +45,37 @@ Give examples
 ```
 
 ### Installing
-A step by step series of examples that tell you how to get a development env running.
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
+Getting installing `Jamie` is as simple as installing it through Julia's package management system.
+Currently, the package is **not** registered with Julia, so to install simply open up a Julia REPL and type
 
 ```
-until finished
+julia> using Pkg
+
+julia> Pkg.add(PackageSpec(url="https://github.com/rjpower4/Jamie.jl.git"))
 ```
 
-End with an example of getting some data out of the system or using it for a little demo.
+and you're ready to go!
+Check it out by grabbing some Lagrange points
+
+```
+julia> using Jamie
+
+julia> equilibrium_solutions(CrtbpSystem(0.012))
+```
 
 ## 🔧 Running the tests <a name = "tests"></a>
-Explain how to run the automated tests for this system.
+To run the tests for `Jamie`, enter the package management mode in the REPL via the `]` key and type
 
-### Break down into end to end tests
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-Explain what these tests test and why
-
-```
-Give an example
+``` 
+(@1.4) pkg> test Jamie
 ```
 
 ## 🎈 Usage <a name="usage"></a>
 Add notes about how to use the system.
 
-## 🚀 Deployment <a name = "deployment"></a>
-Add additional notes about how to deploy this on a live system.
-
-## ⛏️ Built Using <a name = "built_using"></a>
-- [MongoDB](https://www.mongodb.com/) - Database
-- [Express](https://expressjs.com/) - Server Framework
-- [VueJs](https://vuejs.org/) - Web Framework
-- [NodeJs](https://nodejs.org/en/) - Server Environment
+## 🚀Contributing <a name = "contributing"></a>
 
 ## ✍️ Authors <a name = "authors"></a>
 - [@rjpower4](https://github.com/rjpower4) - Idea & Initial work
 
 See also the list of [contributors](https://github.com/kylelobo/The-Documentation-Compendium/contributors) who participated in this project.
-
-## 🎉 Acknowledgements <a name = "acknowledgement"></a>
-- Hat tip to anyone whose code was used
-- Inspiration
-- Reference
