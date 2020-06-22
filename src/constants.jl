@@ -1,6 +1,6 @@
 module Constants
 
-using Jamie: CelestialBody, PointMassPotential, SphericalShapeModel, CrtbpSystem
+using Jamie: CelestialBody, PointMassPotential, SphericalShapeModel, CrtbpSystem, DimensionalSet
 
 const EARTH = CelestialBody(
     "EARTH",
@@ -19,9 +19,11 @@ const MOON = CelestialBody(
 const EARTH_MOON_SYS = CrtbpSystem(
     1.2150584269940356e-02;
     name = "EARTH-MOON",
-    char_mass = 6.0460429902763588e+24,
-    char_length = 3.8474799201129237e+05,
-    char_time = 3.7569985908499121e+05
+    dimset = DimensionalSet(
+        mass = 6.0460429902763588e+24,
+        length = 3.8474799201129237e+05,
+        time = 3.7569985908499121e+05
+    )
 )
 
 const LUNAR_SYNODIC_PERIOD = 29.530575 * (24.0 * 3600.0)

@@ -66,26 +66,16 @@ as well as the system name and characteristic quantities.
 See also: [`mass_ratio`](@ref), [`characteristic_mass`](@ref), [`characteristic_time`](@ref),
 [`characteristic_length`](@ref), [`characteristic_velocity`](@ref)
 """
-struct CrtbpSystem{T, CM, CL, CT}
+struct CrtbpSystem{T, D}
     μ::T
     name::String
-    char_mass::CM
-    char_length::CL
-    char_time::CT
+    dimset::D
 
-    function CrtbpSystem(μ::T, name::String, char_mass::CM, char_length::CL, char_time::CT) where {T,CM,CL,CT}
+    function CrtbpSystem(μ::T, name::String, dimset::D) where {T, D}
         if μ <= 0.0
             throw(DomainError(μ, "Non-positive μ value"))
         end
-        if CM != Nothing && char_mass <= 0
-            throw(DomainError(char_mass, "Non-Positive characteristic mass"))
-        elseif CL != Nothing && char_length<= 0
-            throw(DomainError(char_length, "Non-Positive characteristic length"))
-        elseif CL != Nothing && char_time <= 0
-            throw(DomainError(char_time, "Non-Positive characteristic time"))
-        end
-
-        new{T, CM, CL, CT}(μ, name, char_mass, char_length, char_time)
+        new{T, D}(μ, name, dimset)
     end
 end
 
@@ -103,11 +93,8 @@ Construct a new `CrtbpSystem` with the μ value and the optional keywor argument
 - `char_length::Union{T, Nothing}=nothing`: characteristic length for the system
 - `char_time::Union{T, Nothing}=nothing`: characteristic time for the system
 """
-function CrtbpSystem(μ::T; name="UNNAMED SYSTEM",
-                     char_mass::CM=nothing,
-                     char_length::CL=nothing,
-                     char_time::CT=nothing) where {T, CM, CL, CT}
-    CrtbpSystem(μ, name, char_mass, char_length, char_time)
+function CrtbpSystem(μ::T; name="UNNAMED SYSTEM", dimset::D=nothing) where {T, D}
+    CrtbpSystem(μ, name, dimset)
 end
 
 
@@ -122,15 +109,26 @@ See also: [`CrtbpSystem`](@ref), [`characteristic_mass`](@ref), [`characteristic
 mass_ratio(s::CrtbpSystem) = s.μ
 
 """
+    dimensional_set(::CrtbpSystem{T, D <: DimensionalSet})
+
+Retrieve the dimensional set for the specified system.
+"""
+dimensional_set(s::CrtbpSystem{T, D}) where {T, D <: DimensionalSet} = s.dimset
+
+"""
     characteristic_mass(::CrtbpSystem)
 
 Retrieve the characteristic mass of the CRTBP system specified. This mass is usually defined as
 the sum of the masses of the two primaries.
 
-See also: [`CrtbpSystem`](@ref), [`mass_ratio`](@ref), [`characteristic_time`](@ref),
-[`characteristic_length`](@ref), [`characteristic_velocity`](@ref)
+See also: [`CrtbpSystem`](@ref), 
+[`mass_ratio`](@ref), 
+[`dimensional_set`](@ref),
+[`characteristic_time`](@ref),
+[`characteristic_length`](@ref), 
+[`characteristic_velocity`](@ref)
 """
-characteristic_mass(s::CrtbpSystem) = s.char_mass
+characteristic_mass(s::CrtbpSystem) = dimensional_set(s) |> characteristic_mass
 
 """
     characteristic_length(::CrtbpSystem)
@@ -138,10 +136,12 @@ characteristic_mass(s::CrtbpSystem) = s.char_mass
 Retrieve the characteristic length of the CRTBP system specified. This length is usually defined as
 the semi-major axis of the circular orbit of P2 in the CRTBP.
 
-See also: [`CrtbpSystem`](@ref), [`mass_ratio`](@ref), [`characteristic_mass`](@ref),
+See also: [`CrtbpSystem`](@ref), 
+[`dimensional_set`](@ref),
+[`mass_ratio`](@ref), [`characteristic_mass`](@ref),
 [`characteristic_time`](@ref), [`characteristic_velocity`](@ref)
 """
-characteristic_length(s) = s.char_length
+characteristic_length(s) = dimensional_set(s) |> characteristic_length
 
 """
     characteristic_length(::CrtbpSystem)
@@ -149,10 +149,12 @@ characteristic_length(s) = s.char_length
 Retrieve the characteristic time of the CRTBP system specified. This time is usually defined as the
 time such that the universal gravitational constant in the non-dimensional system is unity.
 
-See also: [`CrtbpSystem`](@ref), [`mass_ratio`](@ref), [`characteristic_mass`](@ref),
+See also: [`CrtbpSystem`](@ref), 
+[`dimensional_set`](@ref),
+[`mass_ratio`](@ref), [`characteristic_mass`](@ref),
 [`characteristic_length`](@ref), [`characteristic_velocity`](@ref)
 """
-characteristic_time(s::CrtbpSystem) = s.char_time
+characteristic_time(s::CrtbpSystem) = dimensional_set(s) |> characteristic_time
 
 """
     characteristic_velocity(::CrtbpSystem)
@@ -160,12 +162,12 @@ characteristic_time(s::CrtbpSystem) = s.char_time
 Retrieve the characteristic velocityof the CRTBP system specified. This is equivalent to the
 characteristic length divided by the characteristic time.
 
-See also: [`CrtbpSystem`](@ref), [`mass_ratio`](@ref), [`characteristic_mass`](@ref),
+See also: [`CrtbpSystem`](@ref), 
+[`dimensional_set`](@ref),
+[`mass_ratio`](@ref), [`characteristic_mass`](@ref),
 [`characteristic_length`](@ref)
 """
-function characteristic_velocity(s::CrtbpSystem)
-    characteristic_length(s) / characteristic_time(s)
-end
+characteristic_velocity(s::CrtbpSystem) = dimensional_set(s) |> characteristic_velocity
 
 """
     dimensionalize(::CrtbpSystem{T,T}, ::PositionVelocity)

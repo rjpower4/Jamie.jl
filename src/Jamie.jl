@@ -17,6 +17,11 @@ export PositionVelocity
 export pv_position, pv_position_mag, pv_position_unit
 export pv_velocity, pv_velocity_mag, pv_velocity_unit
 
+# Dimensional Set
+export DimensionalSet
+export characteristic_mass, characteristic_length, characteristic_time
+export characteristic_velocity, characteristic_acceleration
+
 # Bodies
 export gravitational_parameter, mean_radius
 export CelestialBody, name_string, spice_identifier, potential_model, shape_model
@@ -27,8 +32,7 @@ export PointMassPotential
 
 # CRTBP
 export CrtbpPrimary, CrtbpP1, CrtbpP2
-export CrtbpSystem, mass_ratio, characteristic_mass, characteristic_length, characteristic_time
-export characteristic_velocity
+export CrtbpSystem, mass_ratio 
 export dimensionalize, nondimensionalize
 export distance_from_primary
 export pseudopotential, pseudopotential_gradient, pseudopotential_hessian
@@ -127,6 +131,112 @@ See also: [`pv_position`](@ref), [`pv_velocity`](@ref),
 """
 pv_velocity_unit(pv::PositionVelocity) = pv_velocity(pv) ./ pv_velocity_mag(pv)
 
+# ************************************************************************************************ #
+# ************************************************************************************************ #
+#                                          DIMENSIONAL SETS                                        #
+# ************************************************************************************************ #
+# ************************************************************************************************ #
+"""
+    DimensionalSet(mass::M, length::L, time::T)
+
+Structure defining a set of dimensional quantities for mass, length, and time.
+
+See also:
+[`characteristic_mass`](@ref), 
+[`characteristic_time`](@ref),
+[`characteristic_length`](@ref), 
+[`characteristic_velocity`](@ref),
+[`characteristic_acceleration`](@ref)
+"""
+struct DimensionalSet{M, L, T}
+    mass::M
+    length::L
+    time::T
+end
+
+function DimensionalSet(;mass::M, length::L, time::T) where {M, L, T}
+    DimensionalSet(mass, length, time)
+end
+
+"""
+    characteristic_mass(::DimensionalSet)
+
+Retrieve the characteristic mass of the dimensional set specified. 
+
+See also: 
+[`DimensionalSet`](@ref),
+[`characteristic_time`](@ref),
+[`characteristic_length`](@ref), 
+[`characteristic_velocity`](@ref),
+[`characteristic_acceleration`](@ref)
+"""
+characteristic_mass(ds::DimensionalSet) = ds.mass
+
+"""
+    characteristic_length(::DimensionalSet)
+
+Retrieve the characteristic length of the dimensional set specified. 
+
+See also: 
+[`DimensionalSet`](@ref),
+[`characteristic_mass`](@ref), 
+[`characteristic_time`](@ref),
+[`characteristic_velocity`](@ref),
+[`characteristic_acceleration`](@ref)
+"""
+characteristic_length(ds::DimensionalSet) = ds.length
+
+"""
+    characteristic_time(::DimensionalSet)
+
+Retrieve the characteristic time of the dimensional set specified. 
+
+See also: 
+[`DimensionalSet`](@ref),
+[`characteristic_mass`](@ref), 
+[`characteristic_length`](@ref),
+[`characteristic_velocity`](@ref),
+[`characteristic_acceleration`](@ref)
+"""
+characteristic_time(ds::DimensionalSet) = ds.time
+
+"""
+    characteristic_velocity(::DimensionalSet)
+
+Retrieve the characteristic velocity of the dimensional set specified. 
+Note, this is a derived quantity and equal to the characteristic length over the 
+characteristic time.
+
+See also: 
+[`DimensionalSet`](@ref),
+[`characteristic_mass`](@ref), 
+[`characteristic_length`](@ref),
+[`characteristic_time`](@ref),
+[`characteristic_acceleration`](@ref)
+"""
+function characteristic_velocity(ds::DimensionalSet)
+    len = characteristic_length(ds)
+    t = characteristic_time(ds)
+    len / t
+end
+
+"""
+    characteristic_acceleration(::DimensionalSet)
+
+Retrieve the characteristic acceleration of the dimensional set specified. 
+Note, this is a derived quantity and equal to the characteristic length over the 
+characteristic time squared.
+
+See also: 
+[`DimensionalSet`](@ref),
+[`characteristic_mass`](@ref), 
+[`characteristic_length`](@ref),
+[`characteristic_time`](@ref),
+[`characteristic_velocity`](@ref)
+"""
+function characteristic_acceleration(ds::DimensionalSet) 
+    characteristic_velocity(ds) / characteristic_time(ds)
+end
 
 # ************************************************************************************************ #
 # ************************************************************************************************ #
