@@ -79,6 +79,14 @@ struct CrtbpSystem{T, D}
     end
 end
 
+"""
+    name_string(::CrtbpSystem)
+
+Retrieve the name of the CRTBP system.
+
+See also:
+[`CrtbpSystem`](@ref),
+"""
 name_string(s::CrtbpSystem) = s.name
 
 """
