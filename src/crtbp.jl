@@ -580,3 +580,54 @@ function equilibrium_solutions(sys::CrtbpSystem; tolerance=1e-12, max_iter=20)
 
     (L1, L2, L3, L4, L5)
 end
+
+
+# ************************************************************************************************ #
+# ************************************************************************************************ #
+#                                       ROTATION ALGORITHMS                                        #
+# ************************************************************************************************ #
+# ************************************************************************************************ #
+"""
+    shift_basepoint(::CrtbpSystem, ::CrtbpPrimary, ::PositionVelocity)
+
+Return the position velocity transformed so that it is with respect to the basepoint specified by the primary.
+Note, this is still in the *rotating frame*.
+
+See also:
+[`CrtbpSystem`](@ref),
+[`CrtbpP1`](@ref),
+[`CrtbpP2`](@ref),
+[`PositionVelocity`](@ref),
+[`shift_to_inertial`](@ref)
+"""
+function shift_basepoint(sys::CrtbpSystem, primary::CrtbpPrimary, pv::PositionVelocity)
+    pv - PositionVelocity(sys, primary)
+end
+
+"""
+    shift_to_inertial(::CrtbpSystem, ::CrtbpPrimary, ::PositionVelocity; t, [initial_phase=0])
+
+Translate and rotate the input such that it has a basepoint at the specified primary and is in the 
+"inertial" frame. 
+This inertial frame is still that of the idealized CRTBP, i.e., it is a simple 2π-periodic affine transformation and
+no ephemerides are incorporated.
+
+See also:
+[`CrtbpSystem`](@ref),
+[`CrtbpP1`](@ref),
+[`CrtbpP2`](@ref),
+[`PositionVelocity`](@ref),
+[`shift_basepoint`](@ref)
+"""
+function shift_to_inertial(sys::CrtbpSystem, primary::CrtbpPrimary, pv::PositionVelocity; t, initial_phase=0.0)
+    ϕ = t  + initial_phase
+    C = @SMatrix [
+         cos(ϕ) -sin(ϕ) 0.0 0.0     0.0    0.0;
+         sin(ϕ)  cos(ϕ) 0.0 0.0     0.0    0.0;
+         0.0     0.0    1.0 0.0     0.0    0.0;
+        -sin(ϕ) -cos(ϕ) 0.0 cos(ϕ) -sin(ϕ) 0.0;
+         cos(ϕ) -sin(ϕ) 0.0 sin(ϕ)  cos(ϕ) 0.0;
+         0.0     0.0    0.0 0.0     0.0    1.0
+    ]
+    C * shift_basepoint(sys, primary, pv)
+end
