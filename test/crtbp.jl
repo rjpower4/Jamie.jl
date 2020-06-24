@@ -8,7 +8,15 @@
             lstar = Float32(2.0)
             tstar = Float16(3.0)
 
-            sys = CrtbpSystem(μ, name=name, char_mass=mstar, char_time=tstar, char_length=lstar)
+            sys = CrtbpSystem(
+                μ, 
+                name=name, 
+                dimset=DimensionalSet(
+                    mass=mstar, 
+                    time=tstar, 
+                    length=lstar
+                ) 
+            ) 
 
             @test characteristic_mass(sys) == mstar
             @test typeof(characteristic_mass(sys)) == typeof(mstar)
@@ -21,10 +29,12 @@
 
             @test characteristic_velocity(sys) == (lstar / tstar)
 
+            @test characteristic_acceleration(sys) == (lstar/tstar/tstar)
+
             sys_nothing = CrtbpSystem(μ, name=name)
-            @test characteristic_mass(sys_nothing) == nothing
-            @test characteristic_length(sys_nothing) == nothing
-            @test characteristic_time(sys_nothing) == nothing
+            @test_throws MethodError characteristic_mass(sys_nothing)
+            @test_throws MethodError characteristic_length(sys_nothing)
+            @test_throws MethodError characteristic_time(sys_nothing)
 
         end
     end
