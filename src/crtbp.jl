@@ -134,7 +134,8 @@ See also: [`CrtbpSystem`](@ref),
 [`dimensional_set`](@ref),
 [`characteristic_time`](@ref),
 [`characteristic_length`](@ref), 
-[`characteristic_velocity`](@ref)
+[`characteristic_velocity`](@ref),
+[`characteristic_acceleration`](@ref)
 """
 characteristic_mass(s::CrtbpSystem) = dimensional_set(s) |> characteristic_mass
 
@@ -147,7 +148,8 @@ the semi-major axis of the circular orbit of P2 in the CRTBP.
 See also: [`CrtbpSystem`](@ref), 
 [`dimensional_set`](@ref),
 [`mass_ratio`](@ref), [`characteristic_mass`](@ref),
-[`characteristic_time`](@ref), [`characteristic_velocity`](@ref)
+[`characteristic_time`](@ref), 
+[`characteristic_acceleration`](@ref)
 """
 characteristic_length(s) = dimensional_set(s) |> characteristic_length
 
@@ -160,7 +162,9 @@ time such that the universal gravitational constant in the non-dimensional syste
 See also: [`CrtbpSystem`](@ref), 
 [`dimensional_set`](@ref),
 [`mass_ratio`](@ref), [`characteristic_mass`](@ref),
-[`characteristic_length`](@ref), [`characteristic_velocity`](@ref)
+[`characteristic_length`](@ref), 
+[`characteristic_velocity`](@ref),
+[`characteristic_acceleration`](@ref)
 """
 characteristic_time(s::CrtbpSystem) = dimensional_set(s) |> characteristic_time
 
@@ -173,9 +177,25 @@ characteristic length divided by the characteristic time.
 See also: [`CrtbpSystem`](@ref), 
 [`dimensional_set`](@ref),
 [`mass_ratio`](@ref), [`characteristic_mass`](@ref),
-[`characteristic_length`](@ref)
+[`characteristic_length`](@ref),
+[`characteristic_acceleration`](@ref)
 """
 characteristic_velocity(s::CrtbpSystem) = dimensional_set(s) |> characteristic_velocity
+
+
+"""
+    characteristic_acceleration(::CrtbpSystem)
+
+Retrieve the characteristic accerlation of the CRTBP system specified. This is equivalent to the
+characteristic length divided by the characteristic time squared.
+
+See also: [`CrtbpSystem`](@ref), 
+[`dimensional_set`](@ref),
+[`mass_ratio`](@ref), [`characteristic_mass`](@ref),
+[`characteristic_length`](@ref),
+[`characteristic_velocity`](@ref)
+"""
+characteristic_acceleration(s::CrtbpSystem) = dimensional_set(s) |> characteristic_acceleration
 
 """
     dimensionalize(::CrtbpSystem{T,T}, ::PositionVelocity)
