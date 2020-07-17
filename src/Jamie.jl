@@ -2,6 +2,8 @@ module Jamie
 
 using StaticArrays
 using LinearAlgebra
+using ForwardDiff
+using DifferentialEquations
 
 # ************************************************************************************************ #
 # ************************************************************************************************ #
@@ -131,6 +133,18 @@ See also: [`pv_position`](@ref), [`pv_velocity`](@ref),
 """
 pv_velocity_unit(pv::PositionVelocity) = pv_velocity(pv) ./ pv_velocity_mag(pv)
 
+
+"""
+    dualize(pv::PositionVelocity)
+
+Build a dual position-velocity to enable evaluation of partial derivatives.
+"""
+function ForwardDiff.dualize(pv::PositionVelocity{T}) where {T}
+    PositionVelocity(
+        ForwardDiff.dualize(PositionVelocity{T}, pv)
+    )
+end
+
 # ************************************************************************************************ #
 # ************************************************************************************************ #
 #                                          DIMENSIONAL SETS                                        #
@@ -236,6 +250,59 @@ See also:
 """
 function characteristic_acceleration(ds::DimensionalSet) 
     characteristic_velocity(ds) / characteristic_time(ds)
+end
+
+# ************************************************************************************************ #
+# ************************************************************************************************ #
+#                                           INTEGRATION PROBLEMS                                   #
+# ************************************************************************************************ #
+# ************************************************************************************************ #
+const DEFAULT_SOLVE_OPTS = Dict(
+    :abstol => 1e-12,
+    :reltol => 1e-12,
+)
+
+struct Propagation{SYS, A, S, P}
+    system::SYS
+    algorithm::A
+    solve_opts::S
+    p::P
+end
+
+function Propagation(sys; algorithm=Vern9(), solve_opts=DEFAULT_SOLVE_OPTS, params=nothing)
+    Propagation(
+        sys,
+        algorithm,
+        solve_opts,
+        params
+    )
+end
+
+equations_of_motion(prop::Propagation) = prop.system
+default_parameters(prop::Propagation) = prop.p
+solver_options(prop::Propagation) = prop.solve_opts
+algorithm(prop::Propagation) = prop.algorithm
+
+
+function (prop::Propagation)(q0, tspan; p::P=nothing, solve_opts...) where {P}
+    if P == Nothing
+        params = default_parameters(prop)
+    else
+        params = p
+    end
+
+    prob = ODEProblem(
+        equations_of_motion(prop),
+        q0,
+        tspan,
+        params
+    )
+    solve(
+        prob,
+        algorithm(prop);
+        solver_options(prop)...,
+        solve_opts...
+    )
 end
 
 # ************************************************************************************************ #

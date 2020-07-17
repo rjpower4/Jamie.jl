@@ -430,6 +430,66 @@ end
 #                                       EQUATIONS OF MOTION                                        #
 # ************************************************************************************************ #
 # ************************************************************************************************ #
+
+"""
+    CrtbpSystem(pv::AbstractArray, p, t)
+
+Evaluate the equations of motion for the Circular Restricted Three Body Problem (CRTBP) at the
+state specified by `pv`.
+The time input, `t`, and the parameter input `p`, 
+while required due to compatibility with `DifferentialEquations.jl`, are not used.
+
+Note, here, `pv` can be any `AbstractArray` due to compatibility with `DifferentialEquations`.
+However, if a `PositionVelocity` is **not** constructible via `PositionVelocity(pv)`, an error will
+be thrown.
+
+See also: [`CrtbpSystem`](@ref), [`PositionVelocity`](@ref)
+"""
+function (sys::CrtbpSystem)(q::AbstractArray, p, t)
+    μ = mass_ratio(sys)
+    pv = PositionVelocity(q)
+    vel   = pv_velocity(pv)
+    Ωx    = pseudopotential_gradient(sys, pv)
+    @SVector [
+        vel[1],
+        vel[2],
+        vel[3],
+        2vel[2] + Ωx[1],
+        -2vel[1] + Ωx[2],
+        Ωx[3],
+    ]
+end
+
+function (sys::CrtbpSystem)(q::AbstractArray, t)
+    μ = mass_ratio(sys)
+    pv = PositionVelocity(q)
+    vel   = pv_velocity(pv)
+    Ωx    = pseudopotential_gradient(sys, pv)
+    @SVector [
+        vel[1],
+        vel[2],
+        vel[3],
+        2vel[2] + Ωx[1],
+        -2vel[1] + Ωx[2],
+        Ωx[3],
+    ]
+end
+
+function (sys::CrtbpSystem)(q::AbstractArray)
+    μ = mass_ratio(sys)
+    pv = PositionVelocity(q)
+    vel   = pv_velocity(pv)
+    Ωx    = pseudopotential_gradient(sys, pv)
+    @SVector [
+        vel[1],
+        vel[2],
+        vel[3],
+        2vel[2] + Ωx[1],
+        -2vel[1] + Ωx[2],
+        Ωx[3],
+    ]
+end
+
 """
     crtbp_eom(pv::AbstractArray, sys::CrtbpSystem, t)
 
