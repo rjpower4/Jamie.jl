@@ -25,8 +25,10 @@ export characteristic_mass, characteristic_length, characteristic_time
 export characteristic_velocity, characteristic_acceleration
 
 # Bodies
-export gravitational_parameter, mean_radius
-export CelestialBody, name_string, spice_identifier, potential_model, shape_model
+export name_string
+export gravitational_parameter, gravitational_potential, gravitational_acceleration
+export mean_radius
+export CelestialBody, string, spice_identifier, potential_model, shape_model
 export NullShapeModel
 export SphericalShapeModel
 export NullPotential
@@ -311,7 +313,7 @@ end
 # ************************************************************************************************ #
 # ************************************************************************************************ #
 include("util.jl")
-include("body.jl")
+include("body/body.jl")
 include("kepler.jl")
 include("crtbp.jl")
 include("constants.jl")

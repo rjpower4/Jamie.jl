@@ -1,77 +1,5 @@
-# ************************************************************************************************ #
-# ************************************************************************************************ #
-#                                        POTENTIAL MODELS                                          #
-# ************************************************************************************************ #
-# ************************************************************************************************ #
-abstract type AbstractPotential end
-
-"""
-    NullPotential
-
-Empty potential model used as an indicator that no potential is defined.
-
-See also: [`PointMassPotential`](@ref)
-"""
-struct NullPotential <: AbstractPotential end
-
-"""
-    PointMassPotential(gm::T)
-
-Simple potential model for a point mass (or centrobaric) body of gravitational parameter `gm`.
-
-See also: [`NullPotential`](@ref)
-"""
-struct PointMassPotential{T}
-    gm::T
-end
-
-"""
-    gravitational_parameter(::PointMassPotential)
-
-Retrieve the gravitational parameter, `GM`, of the potential model.
-This is the standard 2-body μ value.
-
-See also: [`PointMassPotential`](@ref)
-"""
-gravitational_parameter(pmp::PointMassPotential) = pmp.gm
-
-
-# ************************************************************************************************ #
-# ************************************************************************************************ #
-#                                           SHAPE MODELS                                           #
-# ************************************************************************************************ #
-# ************************************************************************************************ #
-abstract type AbstractShapeModel end
-
-"""
-    NullShapeModel
-Empty shape model used as an indicator that no shape is defined.
-
-See also: [`SphericalShapeModel`](@ref)
-"""
-struct NullShapeModel <: AbstractShapeModel end
-
-"""
-    SphericalShapeModel(radius::T)
-
-Simple shape model describing a sphere of radius, `radius`.
-
-See also: [`NullShapeModel`](@ref)
-"""
-struct SphericalShapeModel{T} <: AbstractShapeModel
-    radius::T
-end
-
-"""
-    mean_radius(::SphericalShapeModel)
-
-Retrieve the mean radius of the spherical shape model.
-Clearly for this model, the mean radius is simple equal to the radius, `radius`.
-
-See also: [`NullShapeModel`](@ref)
-"""
-mean_radius(m::SphericalShapeModel) = m.radius
-
+include("potential.jl")
+include("shape.jl")
 
 # ************************************************************************************************ #
 # ************************************************************************************************ #
@@ -79,23 +7,79 @@ mean_radius(m::SphericalShapeModel) = m.radius
 # ************************************************************************************************ #
 # ************************************************************************************************ #
 
+"""
+    AbstractBody
+
+Abstract base type for all "body-like" objects. Bodies in Jamie are amorphous in design. The most
+common implementation is the [`CelestialBody`](@ref) which defines a planet/moon/asteroid type
+object. The method defined on the `AbstractBody` is the [`name_string`](@ref) method which returns
+"UNNAMED BODY" if not redifined for a specific type.
+
+See also:
+[`CelestialBody`](@ref),
+[`NullCelestialBody`](@ref)
+"""
 abstract type AbstractBody end
 
-struct NullBody <: AbstractBody end
+"""
+    name_string(::AbstractBody)
 
-name_string(::NullBody) = "UNNAMED_BODY"
+Return the name of the body as a string.
+"""
+name_string(::AbstractBody) = "UNNAMED BODY"
 
-spice_identifier(nb::NullBody) =
-    throw(DomainError(nb, "`NullBody` Type does not have SPICE ID"))
 
-mean_radius(nb::NullBody) =
-    throw(DomainError(nb, "`NullBody` Type does not define a mean radius"))
+# ************************************************************************************************ #
+# ************************************************************************************************ #
+#                                 ABSTRACT CELESTIAL BODY STRUCTURE                                #
+# ************************************************************************************************ #
+# ************************************************************************************************ #
+"""
+    AbstractCelestialBody <: AbstractBody
 
-potential_model(nb::NullBody) =
-    throw(DomainError(nb, "`NullBody` Type does not define a potential"))
+This subtype of [`AbstractBody`](@ref) specifies that the body is a "Celestial" body like a
+planet, moon, or asteroid.
+"""
+abstract type AbstractCelestialBody <: AbstractBody end
 
-gravitational_parameter(nb::NullBody) =
-    throw(DomainError(nb, "`NullBody` Type does not define a gravitational parameter"))
+# ************************************************************************************************ #
+# ************************************************************************************************ #
+#                                   NULL CELESTIAL BODY STRUCTURE                                  #
+# ************************************************************************************************ #
+# ************************************************************************************************ #
+"""
+    NullCelestialBody <: AbstractBody
+
+This is an empty celestial body type.
+"""
+struct NullCelestialBody <: AbstractCelestialBody end
+
+"""
+    name_string(::NullCelestialBody)
+
+Returns the name of the null body, always "NULL BODY".
+"""
+name_string(::NullCelestialBody) = "NULL BODY"
+
+"""
+    shape_model(::NullCelestialBody)
+
+Returns a null shape model.
+
+See also:
+[`NullShapeModel`](@ref)
+"""
+shape_model(::NullCelestialBody) = NullShapeModel()
+
+"""
+    potential_model(::NullCelestialBody)
+
+Returns a null potential model.
+
+See also:
+[`NullPotentialModel`](@ref)
+"""
+potential_model(::NullCelestialBody) = NullPotential()
 
 # ************************************************************************************************ #
 # ************************************************************************************************ #
@@ -103,13 +87,16 @@ gravitational_parameter(nb::NullBody) =
 # ************************************************************************************************ #
 # ************************************************************************************************ #
 """
-    CelestialBody{T, I <: Integer}(name::String, gm::T, spice_id::I, mean_radius::T)
+    CelestialBody{T, I <: Integer}(name::String, gm::T, spice_id::I, mean_radius::T) <: AbstractCelestialBody
 
 Struct defining a celestial body (e.g. Moon, Planet, Asteroid).
 
-See also: [`PointMassPotential`](@ref), [`SphericalShapeModel`](@ref)
+See also:
+[`PointMassPotential`](@ref),
+[`SphericalShapeModel`](@ref),
+[`NullCelestialBody`](@ref)
 """
-struct CelestialBody{I <: Integer, P <: PointMassPotential, S <: AbstractShapeModel} <: AbstractBody
+struct CelestialBody{I <: Integer, P <: PointMassPotential, S <: AbstractShapeModel} <: AbstractCelestialBody
     name::String
     spice_id::I
     potential::P
@@ -211,3 +198,38 @@ See also:
 [`mean_radius`](@ref),
 """
 gravitational_parameter(cb::CelestialBody) = potential_model(cb) |> gravitational_parameter
+
+"""
+    gravitational_potential(::CelestialBody)
+
+Retrieve the gravitational potential of the body if a non-null potential model is defined.
+The particular calculation of the gravitational potential is implemented by the potential model.
+
+See also:
+[`PointMassPotential`](@ref),
+[`CelestialBody`](@ref),
+[`name_string`](@ref),
+[`spice_identifier`](@ref),
+[`potential_model`](@ref),
+[`shape_model`](@ref),
+[`mean_radius`](@ref),
+"""
+gravitational_potential(cb::CelestialBody, q) = gravitational_potential(potential_model(cb), q)
+
+"""
+    gravitational_acceleration(::CelestialBody, r)
+
+Retrieve the gravitational acceleration of the body if a non-null potential model is defined.
+The value, `r`, can be a scalar distance as well as a vector (`Array`, `PositionVelocity`, ...).
+If a scalar is passed, the acceleration magnitude is returned.
+
+See also:
+[`PointMassPotential`](@ref),
+[`CelestialBody`](@ref),
+[`name_string`](@ref),
+[`spice_identifier`](@ref),
+[`potential_model`](@ref),
+[`shape_model`](@ref),
+[`mean_radius`](@ref),
+"""
+gravitational_acceleration(cb::CelestialBody, q) = gravitational_acceleration(potential_model(cb), q)

@@ -17,14 +17,17 @@ struct CrtbpP1{T <: AbstractBody} <: CrtbpPrimary
 end
 
 """
-    CrtbpP1(body=NullBody())
+    CrtbpP1(body=NullCelestialBody())
 
 Construct a new `CrtbpP1` instance.
-The internal `body` field defaults to the `NullBody`.
+The internal `body` field defaults to the `NullCelestialBody`.
 
-See also: [`CelestialBody`](@ref), [`NullBody`](@ref), ['CrtbpP2'](@ref)
+See also:
+[`CelestialBody`](@ref),
+[`NullCelestiallBody`](@ref),
+['CrtbpP2'](@ref)
 """
-function CrtbpP1(body=NullBody())
+function CrtbpP1(body=NullCelestialBody())
     CrtbpP1(body)
 end
 
@@ -41,14 +44,17 @@ struct CrtbpP2{T <: AbstractBody} <: CrtbpPrimary
 end
 
 """
-    CrtbpP2(body=NullBody())
+    CrtbpP2(body=NullCelestialBody())
 
 Construct a new `CrtbpP2` instance.
-The internal `body` field defaults to the `NullBody`.
+The internal `body` field defaults to the `NullCelestialBody`.
 
-See also: [`CelestialBody`](@ref), [`NullBody`](@ref), ['CrtbpP1'](@ref)
+See also:
+[`CelestialBody`](@ref),
+[`NullCelestialBody`](@ref),
+['CrtbpP1'](@ref)
 """
-function CrtbpP2(body=NullBody())
+function CrtbpP2(body=NullCelestialBody())
     CrtbpP2(body)
 end
 
