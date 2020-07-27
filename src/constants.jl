@@ -15,7 +15,7 @@ module Integration
         the absolute and relative tolerances are included. A full list of solver options can be found
         [here](https://diffeq.sciml.ai/stable/basics/common_solver_opts/).
     """
-    const DEFAULT_SOLVE_OPTS = Dict(
+    const DEFAULT_SOLVER_OPTIONS = Dict(
         :abstol => 1e-12, # Default Absolute Tolerance
         :reltol => 1e-12, # Default Relative Tolerance
     )
