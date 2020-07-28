@@ -72,7 +72,7 @@ Calculate the gravitational potential of another massive body with
 state, `pv`, with respect to the center of mass of the potential model.
 """
 function gravitational_potential(pmp::PointMassPotential, pv::PositionVelocity)
-    gravitational_potential(pmp, pv_position_mag(pv))
+    gravitational_potential(pmp, position_mag(pv))
 end
 
 """
@@ -104,5 +104,5 @@ Calculate the acceleration vector due to gravity for a body with position and ve
 with respect to the point mass defined by `pv`.
 """
 function gravitational_acceleration(pmp::PointMassPotential, pv::PositionVelocity)
-    gravitational_acceleration(pmp, pv_position(pv))
+    gravitational_acceleration(pmp, position(pv))
 end

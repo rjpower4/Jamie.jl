@@ -451,7 +451,7 @@ Calculate the Jacobi constant of a state in the CRTBP.
 See also: [`jacobi_constant_gradient`](@ref)
 """
 function jacobi_constant(sys::CrtbpSystem, pv::PositionVelocity)
-    v = pv_velocity_mag(pv)
+    v = velocity_mag(pv)
     Ω = pseudopotential(sys, pv)
     2Ω-v^2
 end
@@ -464,7 +464,7 @@ See also: [`jacobi_constant`](@ref)
 """
 function jacobi_constant_gradient(sys::CrtbpSystem, pv::PositionVelocity)
     Ωx = pseudopotential_gradient(sys, pv)
-    v_vec = pv_velocity(pv)
+    v_vec = velocity(pv)
     vx = @SVector [0.0, 0.0, 0.0, v_vec[1], v_vec[2], v_vec[3]]
     2Ωx .- 2 .* vx
 end
@@ -493,7 +493,7 @@ See also: [`CrtbpSystem`](@ref), [`PositionVelocity`](@ref)
 function (sys::CrtbpSystem)(q::AbstractArray, p, t)
     μ = mass_ratio(sys)
     pv = PositionVelocity(q)
-    vel   = pv_velocity(pv)
+    vel   = velocity(pv)
     Ωx    = pseudopotential_gradient(sys, pv)
     @SVector [
         vel[1],
@@ -508,7 +508,7 @@ end
 function (sys::CrtbpSystem)(q::AbstractArray, t)
     μ = mass_ratio(sys)
     pv = PositionVelocity(q)
-    vel   = pv_velocity(pv)
+    vel   = velocity(pv)
     Ωx    = pseudopotential_gradient(sys, pv)
     @SVector [
         vel[1],
@@ -523,7 +523,7 @@ end
 function (sys::CrtbpSystem)(q::AbstractArray)
     μ = mass_ratio(sys)
     pv = PositionVelocity(q)
-    vel   = pv_velocity(pv)
+    vel   = velocity(pv)
     Ωx    = pseudopotential_gradient(sys, pv)
     @SVector [
         vel[1],
@@ -551,7 +551,7 @@ See also: [`crtbp_jacobian`](@ref), [`PositionVelocity`](@ref)
 function crtbp_eom(q::AbstractArray, sys::CrtbpSystem, t)
     μ = mass_ratio(sys)
     pv = PositionVelocity(q)
-    vel   = pv_velocity(pv)
+    vel   = velocity(pv)
     Ωx    = pseudopotential_gradient(sys, pv)
     @SVector [
         vel[1],

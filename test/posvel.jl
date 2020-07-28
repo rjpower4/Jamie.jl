@@ -19,12 +19,12 @@
     @test pv1.vy == vy
     @test pv1.vz == vz
 
-    @test pv_position(pv1) == SVector(x, y, z)
-    @test pv_velocity(pv1) == SVector(vx, vy, vz)
+    @test position(pv1) == SVector(x, y, z)
+    @test velocity(pv1) == SVector(vx, vy, vz)
 
-    @test pv_position_mag(pv1) == pos_mag
-    @test pv_velocity_mag(pv1) == vel_mag
+    @test position_mag(pv1) == pos_mag
+    @test velocity_mag(pv1) == vel_mag
 
-    @test pv_position_unit(pv1) == (SVector(x, y, z) ./ pos_mag)
-    @test pv_velocity_unit(pv1) == (SVector(vx, vy, vz) ./ vel_mag)
+    @test position_unit(pv1) == (SVector(x, y, z) ./ pos_mag)
+    @test velocity_unit(pv1) == (SVector(vx, vy, vz) ./ vel_mag)
 end

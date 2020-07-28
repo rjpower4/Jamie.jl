@@ -182,8 +182,8 @@ basepoint at the primary with parameter, `gm`.
 The resultant Keplerian element set will be, therefore, defined with respect to that same frame.
 """
 function KeplerianElementSet(gm, pv::PositionVelocity)
-    R = pv_position(pv)
-    V = pv_velocity(pv)
+    R = position(pv)
+    V = velocity(pv)
     r = norm(R)
     v = norm(V)
 
