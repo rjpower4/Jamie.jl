@@ -23,12 +23,13 @@ export pv_velocity, pv_velocity_mag, pv_velocity_unit
 export DimensionalSet
 export characteristic_mass, characteristic_length, characteristic_time
 export characteristic_velocity, characteristic_acceleration
+export dimensional_set
 
 # Bodies
-export name_string
-export gravitational_parameter, gravitational_potential, gravitational_acceleration
-export mean_radius
-export CelestialBody, string, spice_identifier, potential_model, shape_model
+export name_string, mean_radius, mean_density, mean_eccentricity, mean_semimajor_axis
+export gravitational_parameter, spice_identifier, equatorial_radius, polar_radius, ellipticity
+export number_natural_satellites, solar_irradiance, total_mass, total_volume
+export CelestialBody, parent_body, celestial_body
 export NullShapeModel
 export SphericalShapeModel
 export NullPotential
@@ -264,7 +265,7 @@ include("util.jl")
 include("body/body.jl")
 include("kepler.jl")
 include("crtbp.jl")
-include("constants.jl")
+include("constants/constants.jl")
 include("integration.jl")
 
 

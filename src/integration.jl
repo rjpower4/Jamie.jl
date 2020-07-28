@@ -82,9 +82,9 @@ solver_algorithm(fm::FlowMap) = fm.algorithm
     FlowMap(sys; [solve_opts, default_params, algorithm])
 
 Construct a new `FlowMap` with optional arguments initialized with default values.
-The default solver options can be seen in `Constants.Integration.DEFAULT_SOLVER_OPTIONS`.
+The default solver options can be seen in `DEFAULT_SOLVER_OPTIONS`.
 The default integration algorithm can be seen in 
-`Constants.Integration.DEFAULT_INTEGRATION_ALGORITHM`.
+`DEFAULT_INTEGRATION_ALGORITHM`.
 The default parameters are `nothing`, so if a dynamical model requires a specific "null" 
 parameter value, it must be set here.
 
@@ -95,9 +95,9 @@ See also:
 [`solver_algorithm`](@ref),
 """
 function FlowMap(sys;
-                 solve_opts=Constants.Integration.DEFAULT_SOLVER_OPTIONS,
+                 solve_opts=DEFAULT_SOLVER_OPTIONS,
                  default_params=nothing,
-                 algorithm=Constants.Integration.DEFAULT_INTEGRATION_ALGORITHM())
+                 algorithm=DEFAULT_INTEGRATION_ALGORITHM())
     FlowMap(
         sys,
         solve_opts,

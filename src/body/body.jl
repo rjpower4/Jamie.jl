@@ -61,26 +61,6 @@ Returns the name of the null body, always "NULL BODY".
 """
 name_string(::NullCelestialBody) = "NULL BODY"
 
-"""
-    shape_model(::NullCelestialBody)
-
-Returns a null shape model.
-
-See also:
-[`NullShapeModel`](@ref)
-"""
-shape_model(::NullCelestialBody) = NullShapeModel()
-
-"""
-    potential_model(::NullCelestialBody)
-
-Returns a null potential model.
-
-See also:
-[`NullPotentialModel`](@ref)
-"""
-potential_model(::NullCelestialBody) = NullPotential()
-
 # ************************************************************************************************ #
 # ************************************************************************************************ #
 #                                      CELESTIAL BODY STRUCTURE                                    #
@@ -96,12 +76,7 @@ See also:
 [`SphericalShapeModel`](@ref),
 [`NullCelestialBody`](@ref)
 """
-struct CelestialBody{I <: Integer, P <: PointMassPotential, S <: AbstractShapeModel} <: AbstractCelestialBody
-    name::String
-    spice_id::I
-    potential::P
-    shape::S
-end
+abstract type CelestialBody <: AbstractCelestialBody end
 
 """
     name_string(cb::CelestialBody)
@@ -116,7 +91,7 @@ See also:
 [`mean_radius`](@ref),
 [`gravitational_parameter`](@ref)
 """
-name_string(cb::CelestialBody) = cb.name
+name_string(cb::CelestialBody) = "Celestial Body"
 
 """
     spice_identifier(cb::CelestialBody)
@@ -128,108 +103,44 @@ More information on SPICE ID codes can be found
 See also:
 [`CelestialBody`](@ref),
 [`name_string`](@ref),
-[`potential_model`](@ref),
-[`shape_model`](@ref),
 [`mean_radius`](@ref),
 [`gravitational_parameter`](@ref)
 """
-spice_identifier(cb::CelestialBody) = cb.spice_id
-
-"""
-    potential_model(::CelestialBody)
-
-Retrieve the potential modlel of the body.
-
-See also:
-[`CelestialBody`](@ref),
-[`name_string`](@ref),
-[`spice_identifier`](@ref),
-[`shape_model`](@ref),
-[`mean_radius`](@ref),
-[`gravitational_parameter`](@ref)
-"""
-potential_model(cb::CelestialBody) = cb.potential
-
-"""
-    shape_model(::CelestialBody)
-
-Retrieve the shape model of the body.
-
-See also:
-[`CelestialBody`](@ref),
-[`name_string`](@ref),
-[`spice_identifier`](@ref),
-[`potential_model`](@ref),
-[`mean_radius`](@ref),
-[`gravitational_parameter`](@ref)
-"""
-shape_model(cb::CelestialBody) = cb.shape
+spice_identifier(cb::CelestialBody) = throw(MethodError(spice_identifier, cb))
 
 """
     mean_radius(::CelestialBody)
 
 Retrieve the mean radius of the body if a non-null shape model is defined.
 The particular calculation of the mean radius is implemented by the shape model.
-
-See also:
-[`SphericalShapeModel`](@ref),
-[`CelestialBody`](@ref),
-[`name_string`](@ref),
-[`spice_identifier`](@ref),
-[`potential_model`](@ref),
-[`shape_model`](@ref),
-[`gravitational_parameter`](@ref)
 """
-mean_radius(cb::CelestialBody) = shape_model(cb) |> mean_radius
+mean_radius(cb::CelestialBody) = throw(MethodError(mean_radius, cb))
+
+equatorial_radius(cb::CelestialBody) = throw(MethodError(equatorial_radius, cb))
+
+polar_radius(cb::CelestialBody) = throw(MethodError(polar_radius, cb))
+
+ellipticity(cb::CelestialBody) = throw(MethodError(ellipticity, cb))
+
+mean_density(cb::CelestialBody) = throw(MethodError(mean_density, cb))
+
+number_natural_satellites(cb::CelestialBody) = throw(MethodError(number_natural_satellites, cb))
+
+mean_semimajor_axis(cb::CelestialBody) = throw(MethodError(mean_semimajor_axis, cb))
+
+mean_eccentricity(cb::CelestialBody) = throw(MethodError(mean_eccentricity, cb))
+
+solar_irradiance(cb::CelestialBody) = throw(MethodError(solar_irradiance, cb))
+
+parent_body(cb::CelestialBody) = throw(MethodError(parent_body, cb))
 
 """
     gravitational_parameter(::CelestialBody)
 
 Retrieve the gravitational parameter of the body if a non-null potential model is defined.
 The particular calculation of the gravitational parameter is implemented by the potential model.
-
-See also:
-[`PointMassPotential`](@ref),
-[`CelestialBody`](@ref),
-[`name_string`](@ref),
-[`spice_identifier`](@ref),
-[`potential_model`](@ref),
-[`shape_model`](@ref),
-[`mean_radius`](@ref),
 """
-gravitational_parameter(cb::CelestialBody) = potential_model(cb) |> gravitational_parameter
+gravitational_parameter(cb::CelestialBody) = throw(MethodError(gravitational_parameter, cb))
 
-"""
-    gravitational_potential(::CelestialBody)
-
-Retrieve the gravitational potential of the body if a non-null potential model is defined.
-The particular calculation of the gravitational potential is implemented by the potential model.
-
-See also:
-[`PointMassPotential`](@ref),
-[`CelestialBody`](@ref),
-[`name_string`](@ref),
-[`spice_identifier`](@ref),
-[`potential_model`](@ref),
-[`shape_model`](@ref),
-[`mean_radius`](@ref),
-"""
-gravitational_potential(cb::CelestialBody, q) = gravitational_potential(potential_model(cb), q)
-
-"""
-    gravitational_acceleration(::CelestialBody, r)
-
-Retrieve the gravitational acceleration of the body if a non-null potential model is defined.
-The value, `r`, can be a scalar distance as well as a vector (`Array`, `PositionVelocity`, ...).
-If a scalar is passed, the acceleration magnitude is returned.
-
-See also:
-[`PointMassPotential`](@ref),
-[`CelestialBody`](@ref),
-[`name_string`](@ref),
-[`spice_identifier`](@ref),
-[`potential_model`](@ref),
-[`shape_model`](@ref),
-[`mean_radius`](@ref),
-"""
-gravitational_acceleration(cb::CelestialBody, q) = gravitational_acceleration(potential_model(cb), q)
+total_mass(cb::CelestialBody) = throw(MethodError(total_mass, cb))
+total_volume(cb::CelestialBody) = throw(MethodError(total_volume, cb))

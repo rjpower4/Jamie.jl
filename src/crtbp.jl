@@ -16,6 +16,8 @@ struct CrtbpP1{T <: AbstractBody} <: CrtbpPrimary
     body::T
 end
 
+celestial_body(p::CrtbpP1) = p.body
+
 """
     CrtbpP1(body=NullCelestialBody())
 
@@ -42,6 +44,8 @@ See also: [`CrtbpP1`](@ref)
 struct CrtbpP2{T <: AbstractBody} <: CrtbpPrimary
     body::T
 end
+
+celestial_body(p::CrtbpP2) = p.body
 
 """
     CrtbpP2(body=NullCelestialBody())
@@ -72,16 +76,17 @@ as well as the system name and characteristic quantities.
 See also: [`mass_ratio`](@ref), [`characteristic_mass`](@ref), [`characteristic_time`](@ref),
 [`characteristic_length`](@ref), [`characteristic_velocity`](@ref)
 """
-struct CrtbpSystem{T, D}
+struct CrtbpSystem{T, D, P}
     μ::T
     name::String
     dimset::D
+    primaries::P
 
-    function CrtbpSystem(μ::T, name::String, dimset::D) where {T, D}
+    function CrtbpSystem(μ::T, name::String, dimset::D, primaries::P) where {T, D, P}
         if μ <= 0.0
             throw(DomainError(μ, "Non-positive μ value"))
         end
-        new{T, D}(μ, name, dimset)
+        new{T, D, P}(μ, name, dimset, primaries)
     end
 end
 
@@ -107,8 +112,8 @@ Construct a new `CrtbpSystem` with the μ value and the optional keywor argument
 - `char_length::Union{T, Nothing}=nothing`: characteristic length for the system
 - `char_time::Union{T, Nothing}=nothing`: characteristic time for the system
 """
-function CrtbpSystem(μ::T; name="UNNAMED SYSTEM", dimset::D=nothing) where {T, D}
-    CrtbpSystem(μ, name, dimset)
+function CrtbpSystem(μ::T; name="UNNAMED SYSTEM", dimset::D=nothing, primaries=nothing) where {T, D}
+    CrtbpSystem(μ, name, dimset, primaries)
 end
 
 
@@ -203,6 +208,10 @@ See also: [`CrtbpSystem`](@ref),
 """
 characteristic_acceleration(s::CrtbpSystem) = dimensional_set(s) |> characteristic_acceleration
 
+
+primaries(sys::CrtbpSystem) = sys.primaries
+
+
 """
     dimensionalize(::CrtbpSystem{T,T}, ::PositionVelocity)
 
@@ -264,6 +273,36 @@ function PositionVelocity(sys::CrtbpSystem, ::CrtbpP2)
         0.0,
         0.0,
         0.0
+    )
+end
+
+
+"""
+    CrtbpSystem(::CrtbpP1{P1}, ::CrtbpP2{P2}) where {P1 <: CelestialBody, P2 <: CelestialBody}
+
+Construct a CRTBP system from two `CelestialBody`'s using the mean semimajor axix of the second primary
+as the characteristic length.
+"""
+function CrtbpSystem(p1::CrtbpP1{P1}, p2::CrtbpP2{P2}) where {P1 <: CelestialBody, P2 <: CelestialBody}
+    b1 = celestial_body(p1)
+    b2 = celestial_body(p2)
+
+    if parent_body(b2) != b1
+        throw(ArgumentError("$(name_string(b2)) does not orbit $(name_string(b1))"))
+    end
+
+    gm1 = gravitational_parameter(b1)
+    gm2 = gravitational_parameter(b2)
+    μ = gm2 / (gm1 + gm2)
+    cmass = (gm1 + gm2) / GRAVITATIONAL_CONSTANT
+    clength = mean_semimajor_axis(b2)
+    ctime = sqrt(clength^3  / (gm1 + gm2))
+
+    CrtbpSystem(
+        μ,
+        name = "$(name_string(b1))-$(name_string(b2))",
+        dimset = DimensionalSet(mass=cmass, length=clength, time=ctime),
+        primaries = (p1, p2)
     )
 end
 
