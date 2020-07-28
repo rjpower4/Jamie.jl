@@ -23,3 +23,4 @@ mean_radius(::Moon) = 1.7374e3 # km
 gravitational_parameter(::Moon) = 4.9028e3 # km^3 / s^2
 mean_semimajor_axis(::Moon) = 3.8474799201129237e5 # km
 parent_body(::Moon) = Earth()
+synodic_period(::Moon) = 29.53 # days
