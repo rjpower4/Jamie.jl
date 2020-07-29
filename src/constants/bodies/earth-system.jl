@@ -1,7 +1,7 @@
 struct Earth <: CelestialBody end
 name(::Earth) = "EARTH"
 spice_identifier(::Earth) = 399
-equatorial_radius(::Earth) = 6378.137 # km
+equatorial_radius(::Earth) = 6378.137 # "km"
 polar_radius(::Earth) = 6356.752 # km
 mean_radius(::Earth) = 6371.000 # km
 ellipticity(::Earth) = 0.003353
@@ -20,7 +20,7 @@ struct Moon <: CelestialBody end
 name(::Moon) = "MOON"
 spice_identifier(::Moon) = 301
 mean_radius(::Moon) = 1.7374e3 # km
-gravitational_parameter(::Moon) = 4.9028e3 # km^3 / s^2
-mean_semimajor_axis(::Moon) = 3.8474799201129237e5 # km
+gravitational_parameter(::Moon) = 4.9028e3 # "km^3/s^2" 
+mean_semimajor_axis(::Moon) = 3.8474799201129237e5 # "km" 
 parent_body(::Moon) = Earth()
-synodic_period(::Moon) = 29.53 # days
+synodic_period(::Moon) = 29.53  # days
