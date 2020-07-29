@@ -1,5 +1,5 @@
 struct Sun <: CelestialBody end
-name_string(::Sun) = "SUN"
+name(::Sun) = "SUN"
 spice_identifier(::Sun) = 399
 mean_radius(::Sun) = 695700.0 # km
 ellipticity(::Sun) = 0.00005 

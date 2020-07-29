@@ -17,7 +17,7 @@ mean_radius(::SphericalShapeModel)
 ## The Celestial Body Structure
 ```@docs
 CelestialBody
-name_string(::CelestialBody)
+name(::CelestialBody)
 spice_identifier
 potential_model
 shape_model

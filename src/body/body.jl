@@ -12,7 +12,7 @@ include("shape.jl")
 
 Abstract base type for all "body-like" objects. Bodies in Jamie are amorphous in design. The most
 common implementation is the [`CelestialBody`](@ref) which defines a planet/moon/asteroid type
-object. The method defined on the `AbstractBody` is the [`name_string`](@ref) method which returns
+object. The method defined on the `AbstractBody` is the [`name`](@ref) method which returns
 "UNNAMED BODY" if not redifined for a specific type.
 
 See also:
@@ -22,11 +22,11 @@ See also:
 abstract type AbstractBody end
 
 """
-    name_string(::AbstractBody)
+    name(::AbstractBody)
 
 Return the name of the body as a string.
 """
-name_string(::AbstractBody) = "UNNAMED BODY"
+name(::AbstractBody) = "UNNAMED BODY"
 
 
 # ************************************************************************************************ #
@@ -55,11 +55,11 @@ This is an empty celestial body type.
 struct NullCelestialBody <: AbstractCelestialBody end
 
 """
-    name_string(::NullCelestialBody)
+    name(::NullCelestialBody)
 
 Returns the name of the null body, always "NULL BODY".
 """
-name_string(::NullCelestialBody) = "NULL BODY"
+name(::NullCelestialBody) = "NULL BODY"
 
 # ************************************************************************************************ #
 # ************************************************************************************************ #
@@ -79,7 +79,7 @@ See also:
 abstract type CelestialBody <: AbstractCelestialBody end
 
 """
-    name_string(cb::CelestialBody)
+    name(cb::CelestialBody)
 
 Retrieve the name of the celestial body.
 
@@ -91,7 +91,7 @@ See also:
 [`mean_radius`](@ref),
 [`gravitational_parameter`](@ref)
 """
-name_string(cb::CelestialBody) = "Celestial Body"
+name(cb::CelestialBody) = "Celestial Body"
 
 """
     spice_identifier(cb::CelestialBody)
@@ -102,7 +102,7 @@ More information on SPICE ID codes can be found
 
 See also:
 [`CelestialBody`](@ref),
-[`name_string`](@ref),
+[`name`](@ref),
 [`mean_radius`](@ref),
 [`gravitational_parameter`](@ref)
 """

@@ -1,5 +1,5 @@
 struct Earth <: CelestialBody end
-name_string(::Earth) = "EARTH"
+name(::Earth) = "EARTH"
 spice_identifier(::Earth) = 399
 equatorial_radius(::Earth) = 6378.137 # km
 polar_radius(::Earth) = 6356.752 # km
@@ -17,7 +17,7 @@ parent_body(::Earth) = Sun()
 
 struct Moon <: CelestialBody end
 
-name_string(::Moon) = "MOON"
+name(::Moon) = "MOON"
 spice_identifier(::Moon) = 301
 mean_radius(::Moon) = 1.7374e3 # km
 gravitational_parameter(::Moon) = 4.9028e3 # km^3 / s^2

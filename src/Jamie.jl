@@ -26,7 +26,7 @@ export characteristic_velocity, characteristic_acceleration
 export dimensional_set
 
 # Bodies
-export name_string, mean_radius, mean_density, mean_eccentricity, mean_semimajor_axis
+export name, mean_radius, mean_density, mean_eccentricity, mean_semimajor_axis
 export gravitational_parameter, spice_identifier, equatorial_radius, polar_radius, ellipticity
 export number_natural_satellites, solar_irradiance, total_mass, total_volume
 export CelestialBody, parent_body, celestial_body, synodic_period

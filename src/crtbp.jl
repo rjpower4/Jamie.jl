@@ -91,14 +91,14 @@ struct CrtbpSystem{T, D, P}
 end
 
 """
-    name_string(::CrtbpSystem)
+    name(::CrtbpSystem)
 
 Retrieve the name of the CRTBP system.
 
 See also:
 [`CrtbpSystem`](@ref),
 """
-name_string(s::CrtbpSystem) = s.name
+name(s::CrtbpSystem) = s.name
 
 """
     CrtbpSystem(μ::T; [name, char_mass, char_length, char_time])
@@ -288,7 +288,7 @@ function CrtbpSystem(p1::CrtbpP1{P1}, p2::CrtbpP2{P2}) where {P1 <: CelestialBod
     b2 = celestial_body(p2)
 
     if parent_body(b2) != b1
-        throw(ArgumentError("$(name_string(b2)) does not orbit $(name_string(b1))"))
+        throw(ArgumentError("$(name(b2)) does not orbit $(name(b1))"))
     end
 
     gm1 = gravitational_parameter(b1)
@@ -300,7 +300,7 @@ function CrtbpSystem(p1::CrtbpP1{P1}, p2::CrtbpP2{P2}) where {P1 <: CelestialBod
 
     CrtbpSystem(
         μ,
-        name = "$(name_string(b1))-$(name_string(b2))",
+        name = "$(name(b1))-$(name(b2))",
         dimset = DimensionalSet(mass=cmass, length=clength, time=ctime),
         primaries = (p1, p2)
     )
