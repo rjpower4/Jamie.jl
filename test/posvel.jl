@@ -22,9 +22,9 @@
     @test position(pv1) == SVector(x, y, z)
     @test velocity(pv1) == SVector(vx, vy, vz)
 
-    @test position_mag(pv1) == pos_mag
-    @test velocity_mag(pv1) == vel_mag
+    @test position_magnitude(pv1) == pos_mag
+    @test velocity_magnitude(pv1) == vel_mag
 
-    @test position_unit(pv1) == (SVector(x, y, z) ./ pos_mag)
-    @test velocity_unit(pv1) == (SVector(vx, vy, vz) ./ vel_mag)
+    @test position_direction(pv1) == (SVector(x, y, z) ./ pos_mag)
+    @test velocity_direction(pv1) == (SVector(vx, vy, vz) ./ vel_mag)
 end

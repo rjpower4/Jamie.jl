@@ -16,8 +16,8 @@ export points_on_sphere
 
 # Position-Velocity
 export PositionVelocity
-export position_mag, position_unit # position extended from Base.position
-export velocity, velocity_mag, velocity_unit
+export position_magnitude, position_direction # position extended from Base.position
+export velocity, velocity_magnitude, velocity_direction
 
 # Dimensional Set
 export DimensionalSet
@@ -58,8 +58,8 @@ Struct representing the position-velocity vector.
 `T` designates the types of component in the vector.
 
 See also: [`position`](@ref), [`velocity`](@ref),
-[`position_mag`](@ref), [`position_unit`](@ref), [`velocity_mag`](@ref),
-[`velocity_unit`](@ref)
+[`position_magnitude`](@ref), [`position_direction`](@ref), [`velocity_magnitude`](@ref),
+[`velocity_direction`](@ref)
 """
 struct PositionVelocity{T} <: FieldVector{6, T}
     x::T
@@ -76,33 +76,33 @@ end
 Get the position components of the position-velocity vector.
 
 See also: [`velocity`](@ref),
-[`position_mag`](@ref), [`position_unit`](@ref), [`velocity_mag`](@ref),
-[`velocity_unit`](@ref)
+[`position_magnitude`](@ref), [`position_direction`](@ref), [`velocity_magnitude`](@ref),
+[`velocity_direction`](@ref)
 """
 Base.position(pv::PositionVelocity) = @SVector [ pv.x, pv.y, pv.z ]
 
 """
-    position_mag(::PositionVelocity)
+    position_magnitude(::PositionVelocity)
 
 Return the magnitude of the position components of the position-velocity vector.
 This is equivalent to the distance from the origin of the position vector.
 
 See also: [`position`](@ref), [`velocity`](@ref),
-[`position_unit`](@ref), [`velocity_mag`](@ref),
-[`velocity_unit`](@ref)
+[`position_direction`](@ref), [`velocity_magnitude`](@ref),
+[`velocity_direction`](@ref)
 """
-position_mag(pv::PositionVelocity) = (norm ∘ position)(pv)
+position_magnitude(pv::PositionVelocity) = (norm ∘ position)(pv)
 
 """
-    position_unit(::PositionVelocity)
+    position_direction(::PositionVelocity)
 
 Return the unit vector parallel to the position sub-vector in the specified position-velocity vector.
 
 See also: [`position`](@ref), [`velocity`](@ref),
-[`position_mag`](@ref), [`velocity_mag`](@ref),
-[`velocity_unit`](@ref)
+[`position_magnitude`](@ref), [`velocity_magnitude`](@ref),
+[`velocity_direction`](@ref)
 """
-position_unit(pv::PositionVelocity) = position(pv) ./ position_mag(pv)
+position_direction(pv::PositionVelocity) = position(pv) ./ position_magnitude(pv)
 
 """
     velocity(::PositionVelocity)
@@ -110,31 +110,31 @@ position_unit(pv::PositionVelocity) = position(pv) ./ position_mag(pv)
 Get the velocity components of the position-velocity vector.
 
 See also: [`position`](@ref),
-[`position_mag`](@ref), [`position_unit`](@ref), [`velocity_mag`](@ref),
-[`velocity_unit`](@ref)
+[`position_magnitude`](@ref), [`position_direction`](@ref), [`velocity_magnitude`](@ref),
+[`velocity_direction`](@ref)
 """
 velocity(pv::PositionVelocity) = @SVector [ pv.vx, pv.vy, pv.vz ]
 
 """
-    velocity_mag(::PositionVelocity)
+    velocity_magnitude(::PositionVelocity)
 
 Return the magnitude of the velocity components of the position-velocity vector.
 
 See also: [`position`](@ref), [`velocity`](@ref),
-[`position_mag`](@ref), [`position_unit`](@ref),
-[`velocity_unit`](@ref)
+[`position_magnitude`](@ref), [`position_direction`](@ref),
+[`velocity_direction`](@ref)
 """
-velocity_mag(pv::PositionVelocity) = (norm ∘ velocity)(pv)
+velocity_magnitude(pv::PositionVelocity) = (norm ∘ velocity)(pv)
 
 """
-    velocity_unit(::PositionVelocity)
+    velocity_direction(::PositionVelocity)
 
 Return the unit vector parallel to the velocity sub-vector in the specified position-velocity vector.
 
 See also: [`position`](@ref), [`velocity`](@ref),
-[`position_mag`](@ref), [`position_unit`](@ref), [`velocity_mag`](@ref),
+[`position_magnitude`](@ref), [`position_direction`](@ref), [`velocity_magnitude`](@ref),
 """
-velocity_unit(pv::PositionVelocity) = velocity(pv) ./ velocity_mag(pv)
+velocity_direction(pv::PositionVelocity) = velocity(pv) ./ velocity_magnitude(pv)
 
 
 """

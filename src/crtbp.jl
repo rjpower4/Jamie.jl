@@ -451,7 +451,7 @@ Calculate the Jacobi constant of a state in the CRTBP.
 See also: [`jacobi_constant_gradient`](@ref)
 """
 function jacobi_constant(sys::CrtbpSystem, pv::PositionVelocity)
-    v = velocity_mag(pv)
+    v = velocity_magnitude(pv)
     Ω = pseudopotential(sys, pv)
     2Ω-v^2
 end

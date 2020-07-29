@@ -6,10 +6,10 @@ PositionVelocity
 
 ```@docs
 position
-position_mag
-position_unit
+position_magnitude
+position_direction
 velocity
-velocity_mag
-velocity_unit
+velocity_magnitude
+velocity_direction
 ```
 
