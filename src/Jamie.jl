@@ -11,6 +11,9 @@ using DifferentialEquations
 # ************************************************************************************************ #
 # ************************************************************************************************ #
 
+# Common
+export name
+
 # Util
 export points_on_sphere
 
@@ -26,7 +29,7 @@ export characteristic_velocity, characteristic_acceleration
 export dimensional_set
 
 # Bodies
-export name, mean_radius, mean_density, mean_eccentricity, mean_semimajor_axis
+export mean_radius, mean_density, mean_eccentricity, mean_semimajor_axis
 export gravitational_parameter, spice_identifier, equatorial_radius, polar_radius, ellipticity
 export number_natural_satellites, solar_irradiance, total_mass, total_volume
 export CelestialBody, parent_body, celestial_body, synodic_period
@@ -35,9 +38,14 @@ export SphericalShapeModel
 export NullPotential
 export PointMassPotential
 
+# Integration/Flow Map
+export FlowMap
+export dynamical_system, default_solver_options, default_parameters, solver_algorithm
+
 # CRTBP
 export CrtbpPrimary, CrtbpP1, CrtbpP2
-export CrtbpSystem, mass_ratio 
+export CrtbpSystem
+export mass_ratio
 export dimensionalize, nondimensionalize
 export distance_from_primary
 export pseudopotential, pseudopotential_gradient, pseudopotential_hessian
