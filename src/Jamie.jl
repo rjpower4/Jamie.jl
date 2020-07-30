@@ -264,7 +264,7 @@ end
 include("util.jl")
 include("body/body.jl")
 include("kepler.jl")
-include("crtbp.jl")
+include("crtbp/crtbp.jl")
 include("constants/constants.jl")
 include("integration.jl")
 
