@@ -11,6 +11,9 @@ using DifferentialEquations
 # ************************************************************************************************ #
 # ************************************************************************************************ #
 
+# Common
+export name
+
 # Util
 export points_on_sphere
 
@@ -26,7 +29,7 @@ export characteristic_velocity, characteristic_acceleration
 export dimensional_set
 
 # Bodies
-export name, mean_radius, mean_density, mean_eccentricity, mean_semimajor_axis
+export mean_radius, mean_density, mean_eccentricity, mean_semimajor_axis
 export gravitational_parameter, spice_identifier, equatorial_radius, polar_radius, ellipticity
 export number_natural_satellites, solar_irradiance, total_mass, total_volume
 export CelestialBody, parent_body, celestial_body, synodic_period
@@ -35,9 +38,14 @@ export SphericalShapeModel
 export NullPotential
 export PointMassPotential
 
+# Integration/Flow Map
+export FlowMap
+export dynamical_system, default_solver_options, default_parameters, solver_algorithm
+
 # CRTBP
 export CrtbpPrimary, CrtbpP1, CrtbpP2
-export CrtbpSystem, mass_ratio 
+export CrtbpSystem
+export mass_ratio
 export dimensionalize, nondimensionalize
 export distance_from_primary
 export pseudopotential, pseudopotential_gradient, pseudopotential_hessian
@@ -45,108 +53,6 @@ export jacobi_constant, jacobi_constant_gradient
 export crtbp_eom, crtbp_jacobian
 export equilibrium_solutions
 
-
-# ************************************************************************************************ #
-# ************************************************************************************************ #
-#                                         POSITION-VELOCITY                                        #
-# ************************************************************************************************ #
-# ************************************************************************************************ #
-"""
-    PositionVelocity{T} <: FieldVector{6, T}
-
-Struct representing the position-velocity vector.
-`T` designates the types of component in the vector.
-
-See also: [`position`](@ref), [`velocity`](@ref),
-[`position_magnitude`](@ref), [`position_direction`](@ref), [`velocity_magnitude`](@ref),
-[`velocity_direction`](@ref)
-"""
-struct PositionVelocity{T} <: FieldVector{6, T}
-    x::T
-    y::T
-    z::T
-    vx::T
-    vy::T
-    vz::T
-end
-
-"""
-    position(::PositionVelocity)
-
-Get the position components of the position-velocity vector.
-
-See also: [`velocity`](@ref),
-[`position_magnitude`](@ref), [`position_direction`](@ref), [`velocity_magnitude`](@ref),
-[`velocity_direction`](@ref)
-"""
-Base.position(pv::PositionVelocity) = @SVector [ pv.x, pv.y, pv.z ]
-
-"""
-    position_magnitude(::PositionVelocity)
-
-Return the magnitude of the position components of the position-velocity vector.
-This is equivalent to the distance from the origin of the position vector.
-
-See also: [`position`](@ref), [`velocity`](@ref),
-[`position_direction`](@ref), [`velocity_magnitude`](@ref),
-[`velocity_direction`](@ref)
-"""
-position_magnitude(pv::PositionVelocity) = (norm ∘ position)(pv)
-
-"""
-    position_direction(::PositionVelocity)
-
-Return the unit vector parallel to the position sub-vector in the specified position-velocity vector.
-
-See also: [`position`](@ref), [`velocity`](@ref),
-[`position_magnitude`](@ref), [`velocity_magnitude`](@ref),
-[`velocity_direction`](@ref)
-"""
-position_direction(pv::PositionVelocity) = position(pv) ./ position_magnitude(pv)
-
-"""
-    velocity(::PositionVelocity)
-
-Get the velocity components of the position-velocity vector.
-
-See also: [`position`](@ref),
-[`position_magnitude`](@ref), [`position_direction`](@ref), [`velocity_magnitude`](@ref),
-[`velocity_direction`](@ref)
-"""
-velocity(pv::PositionVelocity) = @SVector [ pv.vx, pv.vy, pv.vz ]
-
-"""
-    velocity_magnitude(::PositionVelocity)
-
-Return the magnitude of the velocity components of the position-velocity vector.
-
-See also: [`position`](@ref), [`velocity`](@ref),
-[`position_magnitude`](@ref), [`position_direction`](@ref),
-[`velocity_direction`](@ref)
-"""
-velocity_magnitude(pv::PositionVelocity) = (norm ∘ velocity)(pv)
-
-"""
-    velocity_direction(::PositionVelocity)
-
-Return the unit vector parallel to the velocity sub-vector in the specified position-velocity vector.
-
-See also: [`position`](@ref), [`velocity`](@ref),
-[`position_magnitude`](@ref), [`position_direction`](@ref), [`velocity_magnitude`](@ref),
-"""
-velocity_direction(pv::PositionVelocity) = velocity(pv) ./ velocity_magnitude(pv)
-
-
-"""
-    dualize(pv::PositionVelocity)
-
-Build a dual position-velocity to enable evaluation of partial derivatives.
-"""
-function ForwardDiff.dualize(pv::PositionVelocity{T}) where {T}
-    PositionVelocity(
-        ForwardDiff.dualize(PositionVelocity{T}, pv)
-    )
-end
 
 # ************************************************************************************************ #
 # ************************************************************************************************ #
@@ -261,10 +167,11 @@ end
 #                                           FILE INCLUDES                                          #
 # ************************************************************************************************ #
 # ************************************************************************************************ #
+include("posvel.jl")
 include("util.jl")
 include("body/body.jl")
 include("kepler.jl")
-include("crtbp.jl")
+include("crtbp/crtbp.jl")
 include("constants/constants.jl")
 include("integration.jl")
 
