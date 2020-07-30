@@ -167,9 +167,9 @@ end
 #                                           FILE INCLUDES                                          #
 # ************************************************************************************************ #
 # ************************************************************************************************ #
+include("posvel.jl")
 include("util.jl")
 include("body/body.jl")
-include("posvel.jl")
 include("kepler.jl")
 include("crtbp/crtbp.jl")
 include("constants/constants.jl")
